@@ -244,4 +244,3 @@ Check the browser console for detailed error output when debugging.
 ## License
 
 Licensed under the MIT License. See the `LICENSE` file for full details.
-```
