@@ -1,0 +1,136 @@
+<div class="widget-header">
+  <div class="widget-title">
+    <!-- Icon + title for the announcements widget -->
+    <i class="fas fa-bullhorn"></i>
+    <span>Announcements</span>
+    <!-- "View All" link: update href to point to the canonical full announcement page for your site -->
+    <a class="announcement-viewall" href="https://ucm-it.github.io/hpc_docs/docs/hpcdocs/HPC-clusters/hpc_news" target="_blank" rel="noopener noreferrer">
+      <i class="fas fa-newspaper"></i> View All
+    </a>
+  </div>
+  <div style="display: flex; gap: 0.5rem; align-items: center;">
+    <!-- Manual refresh control -->
+    <button id="reloadNews" class="widget-action" title="Refresh">
+      <i class="fa fa-rotate-right"></i>
+    </button>
+  </div>
+</div>
+<!-- Timestamp area; shows last-fetched time -->
+<div id="news-timestamp" class="last-updated"></div>
+<!-- Container where the parsed announcement will be injected -->
+<div id="news-widget"></div>
+
+<script>
+// Utility: extract HTML between two heading boundaries. Stops early if an unexpected <h2> appears.
+function extractTextBetweenElements(startElement, endElement) {
+  let content = [];
+  let current = startElement.nextElementSibling;
+  while (current && current !== endElement && current.tagName !== 'H2') {
+    content.push(current.outerHTML);
+    current = current.nextElementSibling;
+  }
+  return content.join('');
+}
+
+// Compute human-readable relative time from a Date object.
+// This is used to show how old the announcement is.
+function timeSince(date) {
+  const seconds = Math.floor((new Date() - date) / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(days / 365);
+
+  if (seconds < 60) return "just now";
+  if (minutes < 60) return `Updated ${minutes} min${minutes !== 1 ? "s" : ""} ago`;
+  if (hours < 24) return `Updated ${hours} hour${hours !== 1 ? "s" : ""} ago`;
+  if (days < 30) return `Updated ${days} day${days !== 1 ? "s" : ""} ago`;
+  if (months < 12) return `Updated ${months} month${months !== 1 ? "s" : ""} ago`;
+  return `Updated ${years} year${years !== 1 ? "s" : ""} ago`;
+}
+
+// Update the small "Last updated:" line above the widget.
+function updateNewsTimestamp() {
+  const tsEl = document.getElementById("news-timestamp");
+  if (tsEl) {
+    const now = new Date();
+    tsEl.textContent = `Last updated: ${now.toLocaleTimeString()}`;
+  }
+}
+
+// Core loader: fetches the remote announcement page, parses out the first announcement,
+// classifies it, and renders it into the DOM.
+async function loadFirstNewsItem() {
+  const widget = document.getElementById('news-widget');
+  const refreshBtn = document.getElementById("reloadNews");
+  widget.innerHTML = '';
+  refreshBtn.disabled = true;
+
+  try {
+    // SOURCE URL: change this to your own announcement HTML page if reusing elsewhere.
+    const response = await fetch('https://ucm-it.github.io/hpc_docs/docs/hpcdocs/HPC-clusters/hpc_news');
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Find the first two meaningful <h2> elements to delimit the latest announcement.
+    const h2s = Array.from(doc.querySelectorAll('h2')).filter(h => h.textContent.trim());
+    const firstH2 = h2s[0], secondH2 = h2s[1];
+    let postedDate = new Date(); // default if no date is found
+
+    if (firstH2) {
+      // Attempt to extract a posted date from an <em> inside the sibling node
+      const emNode = firstH2.nextElementSibling?.querySelector('em');
+      if (emNode) {
+        const match = emNode.textContent.match(/\d{2}\/\d{2}\/\d{4}/);
+        if (match) postedDate = new Date(match[0]);
+      }
+
+      // Grab the content between the first and second heading
+      const contentHTML = extractTextBetweenElements(firstH2, secondH2);
+      const container = document.createElement('div');
+      container.className = 'announcement-container';
+
+      // Simple keyword-based classification; adjust terms as needed for your own site.
+      let type = "info";
+      const title = firstH2.textContent.toLowerCase();
+      if (title.includes("maintenance") || title.includes("downtime")) type = "maintenance";
+      else if (title.includes("outage") || title.includes("fail")) type = "alert";
+
+      // Build inner HTML; to extend, you could replace the placeholder link with a real anchor.
+      container.innerHTML = `
+        <div class="announcement-topic">
+          <a class="announcement-link" href="#">${firstH2.textContent}</a>
+        </div>
+        <div class="announcement-meta">
+          <span class="announcement-badge ${type}">${type.charAt(0).toUpperCase() + type.slice(1)}</span>
+          <span class="announcement-time">${timeSince(postedDate)}</span>
+        </div>
+        <div class="announcement-body ${type}">
+          ${contentHTML.replace(/<p>\s*<em>.*?<\/em>\s*<\/p>/, '')} <!-- Strip posted date paragraph -->
+        </div>
+      `;
+
+      widget.appendChild(container);
+    } else {
+      // Fallback if no announcement heading found
+      widget.innerHTML = `<div class="no-jobs-msg">No announcements found.</div>`;
+    }
+  } catch (error) {
+    // Log for debugging and show an error message to the user
+    console.error('Error loading announcements:', error);
+    widget.innerHTML = `<div class="no-jobs-msg">Unable to load announcements.</div>`;
+  } finally {
+    updateNewsTimestamp();
+    refreshBtn.disabled = false;
+  }
+}
+
+// Initialize on DOM ready and wire up refresh button.
+document.addEventListener('DOMContentLoaded', () => {
+  const runRefresh = () => loadFirstNewsItem();
+  runRefresh();
+  document.getElementById("reloadNews")?.addEventListener("click", runRefresh);
+});
+</script>
