@@ -18,7 +18,7 @@ A small self-contained widget that fetches and surfaces the latest announcement 
 
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/NessieCanCode/ood_news_widget.git]
+   git clone https://github.com/NessieCanCode/ood_news_widget.git
    cd ood_news_widget
    ```
 
