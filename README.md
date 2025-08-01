@@ -52,6 +52,9 @@ The embedded script does the following:
   ```js
   const response = await fetch('https://your-org.github.io/your_docs/path_to_news');
   ```
+
+Example: https://ucm-it.github.io/hpc_docs/docs/hpcdocs/HPC-clusters/hpc_news
+
 - **Classification Keywords**: Adjust or extend the keyword logic for your terminology.
 - **Styling Hooks**: Customize via CSS targeting:
   - `.announcement-badge.info`, `.announcement-badge.maintenance`, `.announcement-badge.alert`
