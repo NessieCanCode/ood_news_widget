@@ -1,6 +1,7 @@
 
 # OnDemand Announcements Widget
 ![Announcements Widget](Screenshot.png)
+
 A small self-contained widget that fetches and surfaces the latest announcement from a remote HTML page (e.g., a shared "news" page) with basic classification (Info / Maintenance / Alert), age display, and manual refresh. Designed so other sites/locations can drop it in and adapt it for their own announcement feed.
 
 ## Features
