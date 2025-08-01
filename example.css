@@ -1,0 +1,143 @@
+/* === Announcement widget minimal CSS === */
+
+/* Header / title / action button */
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #222;
+}
+.widget-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.widget-action {
+  font-size: 1rem;
+  padding: 0.2rem 0.8rem;
+  border: none;
+  background: white;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* "View all" link/button */
+.announcement-viewall {
+  font-size: 0.75rem;
+  background: #f0f9ff;
+  border: 1px solid #cce5ff;
+  color: #007bff;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Timestamp line above widget */
+.last-updated {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: -0.5rem;
+}
+
+/* Announcement card container */
+.announcement-container {
+  font-family: system-ui, sans-serif;
+  color: #111;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  background: #f9fafa;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Title / topic */
+.announcement-topic {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111;
+  margin-bottom: 0.25rem;
+}
+.announcement-link {
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.announcement-link:hover {
+  text-decoration: underline;
+}
+
+/* Metadata row: badge + time */
+.announcement-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+/* Badge variants */
+.announcement-badge {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  display: inline-block;
+}
+.announcement-badge.info {
+  background-color: #e6f1fd;
+  color: #007bff;
+}
+.announcement-badge.alert {
+  background-color: #fdecea;
+  color: #d32f2f;
+}
+.announcement-badge.maintenance {
+  background-color: #fff4e5;
+  color: #ff9800;
+}
+
+/* Relative time text */
+.announcement-time {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* Body content with contextual border */
+.announcement-body {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid #007bff;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: #222;
+  line-height: 1.5;
+  background: #fff;
+}
+.announcement-body.alert {
+  border-left-color: #d32f2f;
+}
+.announcement-body.maintenance {
+  border-left-color: #ff9800;
+}
+
+/* Fallback / empty state */
+.no-jobs-msg {
+  padding: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  text-align: center;
+  color: #555;
+}
